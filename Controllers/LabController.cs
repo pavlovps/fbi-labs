@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using pavlovLab.Models;
+using pavlovLab.Storage;
 
 namespace pavlovLab.Controllers
 {
@@ -11,20 +12,25 @@ namespace pavlovLab.Controllers
     [ApiController]
     public class LabController : ControllerBase
     {
-        private static List<LabData> _memCache = new List<LabData>();
+        private static IStorage<LabData> _storage;
+
+        public LabController(IStorage<LabData> storage)
+        {
+            _storage = storage;
+        }
 
         [HttpGet]
         public ActionResult<IEnumerable<LabData>> Get()
         {
-            return Ok(_memCache);
+            return Ok(_storage.All);
         }
 
         [HttpGet("{id}")]
         public ActionResult<LabData> Get(int id)
         {
-            if (_memCache.Count <= id) return NotFound("No such");
+            if (_storage.Count <= id) return NotFound("No such");
 
-            return Ok(_memCache[id]);
+            return Ok(_storage[id]);
         }
 
         [HttpPost]
@@ -34,7 +40,7 @@ namespace pavlovLab.Controllers
 
             if (!validationResult.IsValid) return BadRequest(validationResult.Errors);
 
-            _memCache.Add(value);
+            _storage.Add(value);
 
             return Ok($"{value.ToString()} has been added");
         }
@@ -42,14 +48,14 @@ namespace pavlovLab.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] LabData value)
         {
-            if (_memCache.Count <= id) return NotFound("No such");
+            if (_storage.Count <= id) return NotFound("No such");
 
             var validationResult = value.Validate();
 
             if (!validationResult.IsValid) return BadRequest(validationResult.Errors);
 
-            var previousValue = _memCache[id];
-            _memCache[id] = value;
+            var previousValue = _storage[id];
+            _storage[id] = value;
 
             return Ok($"{previousValue.ToString()} has been updated to {value.ToString()}");
         }
@@ -57,10 +63,10 @@ namespace pavlovLab.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            if (_memCache.Count <= id) return NotFound("No such");
+            if (_storage.Count <= id) return NotFound("No such");
 
-            var valueToRemove = _memCache[id];
-            _memCache.RemoveAt(id);
+            var valueToRemove = _storage[id];
+            _storage.RemoveAt(id);
 
             return Ok($"{valueToRemove.ToString()} has been removed");
         }
