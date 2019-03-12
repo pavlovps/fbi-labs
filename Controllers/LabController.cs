@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using pavlovLab.Models;
+using pavlovLab.Storage;
 
 namespace pavlovLab.Controllers
 {
@@ -11,18 +12,18 @@ namespace pavlovLab.Controllers
     [ApiController]
     public class LabController : ControllerBase
     {
-        private static List<LabData> _memCache = new List<LabData>();
+        private static IStorage<LabData> _memCache = new MemCache();
 
         [HttpGet]
         public ActionResult<IEnumerable<LabData>> Get()
         {
-            return Ok(_memCache);
+            return Ok(_memCache.All);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<LabData> Get(int id)
+        public ActionResult<LabData> Get(Guid id)
         {
-            if (_memCache.Count <= id) return NotFound("No such");
+            if (!_memCache.Has(id)) return NotFound("No such");
 
             return Ok(_memCache[id]);
         }
@@ -40,9 +41,9 @@ namespace pavlovLab.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] LabData value)
+        public IActionResult Put(Guid id, [FromBody] LabData value)
         {
-            if (_memCache.Count <= id) return NotFound("No such");
+            if (!_memCache.Has(id)) return NotFound("No such");
 
             var validationResult = value.Validate();
 
@@ -55,9 +56,9 @@ namespace pavlovLab.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
-            if (_memCache.Count <= id) return NotFound("No such");
+            if (!_memCache.Has(id)) return NotFound("No such");
 
             var valueToRemove = _memCache[id];
             _memCache.RemoveAt(id);
