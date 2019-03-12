@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <Version>0.0.1-rc.1</Version>
+    <Version>0.0.3-rc.1</Version>
     <Authors>P.Pavlov</Authors>
     <Company>arl-shipping.com</Company>
-    <Product>Lab 2</Product>
+    <Product>Lab</Product>
     <PackageId>MyApp</PackageId>
-    <FileVersion>0.0.1</FileVersion>
+    <FileVersion>0.0.3</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
