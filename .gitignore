@@ -328,3 +328,9 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+.net-core-sdk/
+curl/
+winscp/
+vscode/
+*.dll
+*.exe
