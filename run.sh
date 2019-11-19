@@ -1,1 +1,0 @@
-nohup dotnet pavlovLab.dll &
