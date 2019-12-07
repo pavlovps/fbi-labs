@@ -48,6 +48,8 @@ namespace pavlovLab.Storage
                 }
             }
         }
+
+        public string StorageType => $"{nameof(FileStorage)}";
         
         private void Flush()
         {
