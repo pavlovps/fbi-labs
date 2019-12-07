@@ -59,5 +59,7 @@ namespace pavlovLab.Storage
                 _memCache.RemoveAll(x => x.Id == id);
             }
         }
+
+        public string StorageType => $"{nameof(MemCache)}";
     }
 }
